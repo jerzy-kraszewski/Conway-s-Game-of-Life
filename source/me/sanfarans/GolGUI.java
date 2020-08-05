@@ -34,11 +34,7 @@ public class GolGUI{
 		panelGlowny = new JPanel(new BorderLayout());
 		ramkaGlowna.getContentPane().add(panelGlowny);
 
-		panelMenuSetup();
-		panelGrySetup();
-		panelAnimacjiSetup();
-		panelHelpSetup();
-		panelAboutSetup();
+		setupPanels();
 
 		ustawPanel(panelMenu);
 
@@ -53,13 +49,50 @@ public class GolGUI{
 		panelGlowny.revalidate();
 	}
 
+	void setupPanels(){
+		panelMenuSetup();
+		panelGrySetup();
+		panelAnimacjiSetup();
+		panelHelpSetup();
+		panelAboutSetup();
+	}
+
+	void rysujProstokaty(){
+		gridState = symulacja.getGridState();
+		for (int i = 1; i <= GRID_SIZE; ++i){
+			for (int j = 1; j <= GRID_SIZE; ++j){
+				if (gridState[i][j]){
+					prostokaty[i][j].setColor(Color.black);
+				}
+				else{
+					prostokaty[i][j].setColor(Color.white);
+				}
+			}
+			panelGlowny.repaint();
+		}
+	}
+
+	class Animacja implements Runnable{
+
+		public void run(){
+			while (! stopSymulacja){
+				rysujProstokaty();
+				try{
+					Thread.sleep(speed);
+				}
+				catch(Exception ex){
+					ex.printStackTrace();
+				}
+				symulacja.nextStep();
+			}
+		}
+	}
+
+	// setup funkcje
 	void panelMenuSetup(){
 		panelMenu = new JPanel(new BorderLayout());
 		panelMenu.setBorder(BorderFactory.createEmptyBorder(40,40,40,40));
 		panelMenu.setBackground(Color.pink);
-
-		//JPanel panelCalyPustyZebyByloLadnie = new JPanel();
-		//panelCalyPustyZebyByloLadnie.setBackground(Color.pink);
 
 		JPanel panelGuzikowMenuGlowne = new JPanel();
 		panelGuzikowMenuGlowne.setBackground(Color.pink);
@@ -192,14 +225,14 @@ public class GolGUI{
 
 		panelAnimacji.add(panelMenuAnimacji, BorderLayout.SOUTH);
 	}
+	// koniec setup funkcji
 
+	// listenery
 	class PlayListener implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent ae){
-			//System.out.println("kliknieto play");
 			ustawPanel(panelGry);
-		
 		}
 	} 
 	class HelpListener implements ActionListener{
@@ -221,7 +254,6 @@ public class GolGUI{
 
 		@Override
 		public void actionPerformed(ActionEvent ae){
-			//System.out.println("rozpoczeto animacje");
 			ustawPanel(panelAnimacji);
 			
 			gridState = new boolean[GRID_SIZE+2][GRID_SIZE+2];
@@ -258,21 +290,6 @@ public class GolGUI{
 		}
 	}
 
-	void rysujProstokaty(){
-		gridState = symulacja.getGridState();
-		for (int i = 1; i <= GRID_SIZE; ++i){
-			for (int j = 1; j <= GRID_SIZE; ++j){
-				if (gridState[i][j]){
-					prostokaty[i][j].setColor(Color.black);
-				}
-				else{
-					prostokaty[i][j].setColor(Color.white);
-				}
-			}
-			panelGlowny.repaint();
-		}
-	}
-
 	class AnimacjaBackListener implements ActionListener{
 
 		@Override
@@ -304,20 +321,6 @@ public class GolGUI{
 			guzikSpeedUp.setEnabled(true);
 		}
 	}
+	// koniec listenerow
 
-	class Animacja implements Runnable{
-
-		public void run(){
-			while (! stopSymulacja){
-				rysujProstokaty();
-				try{
-					Thread.sleep(speed);
-				}
-				catch(Exception ex){
-					ex.printStackTrace();
-				}
-				symulacja.nextStep();
-			}
-		}
-	}
 }
