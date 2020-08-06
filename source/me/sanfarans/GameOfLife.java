@@ -13,3 +13,5 @@ public class GameOfLife{
 		new GolGUI().przygotujGUI();
 	}
 }
+
+// bez zadnej zmiany nie chce mi sie zrobic pull request wiec oto zmiana
